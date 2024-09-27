@@ -1,0 +1,35 @@
+services:
+  mongodb:
+    image: mongo:8.0.0-rc17-noble
+    container_name: mongodb
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - "./data:/data/db"
+      - "./replica.key:/data/replicaset.key.devel"
+      - "./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh"
+    entrypoint:
+      - bash
+      - -c
+      - |
+          cp /data/replicaset.key.devel /data/replica.key
+          chmod 400 /data/replica.key
+          chown 999:999 /data/replica.key
+          exec docker-entrypoint.sh "$$@"
+    networks:
+      - ingress
+    command: mongod --bind_ip_all --replSet "ssdclopezpro" --keyFile /data/replica.key
+    environment:
+      MONGO_USERNAME: "${MONGO_USERNAME}"
+      MONGO_PASSWORD: "${MONGO_PASSWORD}"
+      MONGO_INITDB_DATABASE:  "${MONGO_INITDB_DATABASE}"
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+            interval: 10s
+            start_period: 30s
+networks:
+  ingress:
+    name: ssdnetwork
+    external: true

@@ -1,0 +1,30 @@
+services:
+  db_secundary:
+    image: mongo:8.0.0-rc17-noble
+    container_name: mongoReplica
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - "./data:/data/db"
+      - "./replica.key:/data/replicaset.key.devel"
+    entrypoint:
+      - bash
+      - -c
+      - |
+          cp /data/replicaset.key.devel /data/replica.key
+          chmod 400 /data/replica.key
+          chown 999:999 /data/replica.key
+          exec docker-entrypoint.sh "$$@"
+    networks:
+      - ingress
+    command: mongod --bind_ip_all --replSet "ssdclopezpro" --keyFile /data/replica.key
+    environment:
+      MONGO_USERNAME: "${MONGO_USERNAME}"
+      MONGO_PASSWORD: "${MONGO_PASSWORD}"
+      MONGO_INITDB_DATABASE:  "${MONGO_INITDB_DATABASE}"
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+networks:
+  ingress:
+    name: ssdnetwork
+    external: true

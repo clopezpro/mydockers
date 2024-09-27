@@ -1,0 +1,8 @@
+
+.env
+.idea
+log/*
+replica.key
+.vscode/
+data/*
+./config/mongodb/log

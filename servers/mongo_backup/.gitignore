@@ -1,0 +1,9 @@
+
+.env
+.idea
+log/*
+mongo_backups_data/*
+replica.key
+.vscode/
+data/*
+./config/mongodb/log

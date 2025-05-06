@@ -1,0 +1,15 @@
+services:
+  mongo-backup:
+    image: alpine:latest
+    container_name: mongo_daily_backup
+    restart: unless-stopped
+    init: true
+    env_file:
+      - ./.env
+    volumes:
+      - ./mongo_backups_data:/backup  # Backup storage on the host
+      - ./backup_scripts:/backup_scripts:ro # Scripts and cronjob (read-only)
+      - ./entrypoint.sh:/entrypoint.sh:ro   # Mount the entrypoint script (read-only)
+    entrypoint: ["/entrypoint.sh"] # Define the entrypoint
+    # Environment variables are now sourced from .env
+    # MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_USER, MONGO_PASS, MONGO_AUTH_DB, BACKUP_KEEP_COUNT

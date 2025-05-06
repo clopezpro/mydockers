@@ -1,0 +1,1 @@
+*/2 * * * * /backup_scripts/backup.sh > /tmp/backup_stdout.log 2> /tmp/backup_stderr.log

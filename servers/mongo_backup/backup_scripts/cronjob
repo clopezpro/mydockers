@@ -1,1 +1,1 @@
-*/2 * * * * /backup_scripts/backup.sh > /tmp/backup_stdout.log 2> /tmp/backup_stderr.log
+0 0 * * * /backup_scripts/backup.sh > /tmp/backup_stdout.log 2> /tmp/backup_stderr.log || /backup_scripts/notificar_telegram.sh

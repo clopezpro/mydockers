@@ -15,6 +15,10 @@ cp /backup_scripts/cronjob /etc/crontabs/root
 echo "--- Entrypoint: Setting cronjob permissions ---"
 chmod 0644 /etc/crontabs/root
 
+echo "--- Entrypoint: Setting notificar_telegram.sh permissions ---"
+chmod +x /backup_scripts/notificar_telegram.sh
+
+
 echo "--- Entrypoint: Touching log file ---"
 touch /var/log/cron.log
 
